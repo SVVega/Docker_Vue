@@ -28,7 +28,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          TAG_NAME=${{ github.sha | head -c7 }}
+          TAG_NAME=$(echo $GITHUB_SHA | head -c7)
           docker buildx create --use
           docker buildx build --no cache --push --platform linux/amd64 --tag REGISTRY/$IMAGE_NAME:$TAG_NAME .
 
@@ -45,7 +45,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           envs: IMAGE-NAME, REGISTRTY, GITHUB_SHA, CONTAINER_NAME
           script: |
-            TAG_NAME=${{ GITHUB.SHA | head -c7 }}
+            TAG_NAME=$(echo $GITHUB_SHA | head -c7)
             docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
             docker stop $CONTAINER_NAME
             docker rm $CONTAINER_NAME
