@@ -1,35 +1,35 @@
 name: CI
-on: 
-  push:
-    branches: ['main', 'master']  
+  on: 
+    push:
+      branches: ['main', 'master']  
 
-  pull_request:
-    branches: ['main', 'master']
+    pull_request:
+      branches: ['main', 'master']
 
-  env: 
-    REGISTRY: 'cr.selcloud.ru/docker-vue/'
-    IMAGE_NAME: 'docker-vue'
-    CONTAINER_NAME: 'docker-vue-container'
+    env: 
+      REGISTRY: 'cr.selcloud.ru/docker-vue/'
+      IMAGE_NAME: 'docker-vue'
+      CONTAINER_NAME: 'docker-vue-container'
 
-  jobs: ''
-    image-build-and-push:
-    runs-on: ubuntu-latest
+    jobs: ''
+      image-build-and-push:
+      runs-on: ubuntu-latest
 
-  steps:
-    - name: Checkout Master
-    uses: actions/checkout@v3
+    steps:
+      - name: Checkout Master
+      uses: actions/checkout@v3
 
-    - name: Set up Docker Buildx
-    uses: docker/setup-buildx-action@v2
+      - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
 
-    - name: Login to Docker Registry
-    run: docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
+      - name: Login to Docker Registry
+      run: docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
 
-    - name: Build and push Docker image
-    run: |
-      TAG_NAME=${{ github.sha | head -c7 }}
-      docker buildx create --use
-      docker buildx build --no cache --push --platform linux/amd64 --tag REGISTRY/$IMAGE_NAME:$TAG_NAME .
+      - name: Build and push Docker image
+      run: |
+        TAG_NAME=${{ github.sha | head -c7 }}
+        docker buildx create --use
+        docker buildx build --no cache --push --platform linux/amd64 --tag REGISTRY/$IMAGE_NAME:$TAG_NAME .
 
 deploy-image:
   runs-on: ubuntu-latest
